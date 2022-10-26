@@ -1,0 +1,39 @@
+project: react
+
+environments:
+  staging:
+    description: 预发布环境
+    services:
+      react:
+        version: 0.0.1
+        runtime: tcloud-cos
+        jobs:
+          build:
+            steps:
+              - run: yarn install
+              - run: yarn build
+              - action: tcloud-actions/deploykit-cos-package-task@v1
+                with:
+                  dist: ./build/
+          deploy:
+            needs: build
+            steps:
+              - action: tcloud-actions/deploykit-cos-deploy-task@v1
+  production:
+    description: 生产环境
+    services:
+      react:
+        version: 0.0.1
+        runtime: tcloud-cos
+        jobs:
+          build:
+            steps:
+              - run: yarn install
+              - run: yarn build
+              - action: tcloud-actions/deploykit-cos-package-task@v1
+                with:
+                  dist: ./build/
+          deploy:
+            needs: build
+            steps:
+              - action: tcloud-actions/deploykit-cos-deploy-task@v1
